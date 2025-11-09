@@ -33,7 +33,8 @@
     "post_id": "p_d20c4b35",
     "member_ids": [
       "u_34bd5d19",
-      "u_0c132533"
+      "u_0c132533",
+      "u_c4e648b2"
     ],
     "messages": [
       {
@@ -61,6 +62,50 @@
     "post_id": "p_1903e0d1",
     "member_ids": [
       "u_ce1e1446"
+    ],
+    "messages": []
+  },
+  {
+    "id": "c_b872a3bd",
+    "post_id": "p_c8293a67",
+    "member_ids": [
+      "u_c4e648b2",
+      "u_5404e7f6"
+    ],
+    "messages": [
+      {
+        "id": "m_d686c4b8",
+        "user_id": "u_5404e7f6",
+        "text": "What time are you available?",
+        "ts": 1762711098
+      },
+      {
+        "id": "m_4e6057bb",
+        "user_id": "u_c4e648b2",
+        "text": "Doors open at 4 pm",
+        "ts": 1762711110
+      },
+      {
+        "id": "m_216316c5",
+        "user_id": "u_5404e7f6",
+        "text": "Great!",
+        "ts": 1762711124
+      }
+    ]
+  },
+  {
+    "id": "c_c416eee0",
+    "post_id": "p_722eca02",
+    "member_ids": [
+      "u_c4e648b2"
+    ],
+    "messages": []
+  },
+  {
+    "id": "c_5d2382aa",
+    "post_id": "p_5c8d84f4",
+    "member_ids": [
+      "u_c4e648b2"
     ],
     "messages": []
   }

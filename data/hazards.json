@@ -10,5 +10,17 @@
     "reporter_id": "u_ffd2adf8",
     "note": "Smoke drifting near Bow Trail",
     "created_at": 1762677782
+  },
+  {
+    "id": "h_12d1a176",
+    "type": "flood",
+    "center": {
+      "lat": 51.08024,
+      "lng": -114.13048
+    },
+    "radius_m": 500,
+    "reporter_id": "u_c4e648b2",
+    "note": "Water rising around the university",
+    "created_at": 1762707067
   }
 ]

@@ -54,5 +54,12 @@
     "name": "Name",
     "password_hash": "$2b$12$d2/eJG2vxCDPh.RQJbmRHuRvy/TJFmu5sYux9C/XtL3dbL2/Y3u..",
     "created_at": 1762701523
+  },
+  {
+    "id": "u_5404e7f6",
+    "email": "bob@gmail.com",
+    "name": "Bob",
+    "password_hash": "$2b$12$Cp81803sutja0fd8Ef.eN.LOq.yCj/jrPKOFho5rf9gxPxKaSIcqO",
+    "created_at": 1762711046
   }
 ]
