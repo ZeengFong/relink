@@ -1,0 +1,19 @@
+[
+  {
+    "id": "p_9a39dd76",
+    "creator_id": "u_97761587",
+    "title": "Hot meals at Y community centre",
+    "description": "Serving 30 plates between 6-9pm. Priority for displaced families.",
+    "image": null,
+    "capacity": 30,
+    "members": [
+      "u_97761587"
+    ],
+    "chat_id": "c_5972c379",
+    "location": {
+      "lat": 51.0486,
+      "lng": -114.0708
+    },
+    "created_at": 1762677782
+  }
+]

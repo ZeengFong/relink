@@ -1,0 +1,23 @@
+[
+  {
+    "id": "u_97761587",
+    "email": "luca@rel.ink",
+    "name": "Luca",
+    "password_hash": "$2b$12$Tsi.INjqRAkEGrI.mvMsaOjZq4twannVLWOoe7..JFXL5AnN6HBta",
+    "created_at": 1762677782
+  },
+  {
+    "id": "u_ffd2adf8",
+    "email": "sky@rel.ink",
+    "name": "Sky",
+    "password_hash": "$2b$12$Tsi.INjqRAkEGrI.mvMsaOjZq4twannVLWOoe7..JFXL5AnN6HBta",
+    "created_at": 1762677782
+  },
+  {
+    "id": "u_c4e648b2",
+    "email": "lsuanez@icloud.com",
+    "name": "Luca",
+    "password_hash": "$2b$12$iIjo81kUTDNOBde28Eh6O.Q9xbAJibTuI6JbjR/RrZRNs.AUXAtC2",
+    "created_at": 1762678576
+  }
+]

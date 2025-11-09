@@ -1,0 +1,14 @@
+[
+  {
+    "id": "h_58819710",
+    "type": "fire",
+    "center": {
+      "lat": 51.05,
+      "lng": -114.07
+    },
+    "radius_m": 1500,
+    "reporter_id": "u_ffd2adf8",
+    "note": "Smoke drifting near Bow Trail",
+    "created_at": 1762677782
+  }
+]
