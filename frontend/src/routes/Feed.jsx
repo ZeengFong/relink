@@ -28,8 +28,8 @@ export default function Feed({ api, user }) {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Welcome back, {user.name}</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold text-slate-900">Welcome back, {user.name}</h1>
+          <p className="text-sm text-slate-700">
             Browse nearby offers, open new ones, and stay ahead of hazards.
           </p>
         </div>
@@ -44,7 +44,7 @@ export default function Feed({ api, user }) {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold">Offers nearby</h2>
+        <h2 className="text-2xl font-bold text-slate-900">Offers nearby</h2>
         <div className="grid gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <PostCard key={post.id} post={post} onJoin={join} userId={user.id} />
@@ -52,7 +52,7 @@ export default function Feed({ api, user }) {
         </div>
         {!posts.length && (
           <div className="flex items-center justify-center h-64 border-2 border-dashed rounded-lg">
-            <p className="text-muted-foreground">No offers yet. Be the first!</p>
+            <p className="text-slate-600">No offers yet. Be the first!</p>
           </div>
         )}
       </div>

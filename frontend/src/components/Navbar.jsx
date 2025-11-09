@@ -57,12 +57,12 @@ export default function Navbar({ user, onLogout }) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
+                <DropdownMenuLabel className="font-normal text-slate-900">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
+                    <p className="text-sm font-medium leading-none text-slate-900">
                       {displayName}
                     </p>
-                    <p className="text-xs leading-none text-muted-foreground">
+                    <p className="text-xs leading-none text-slate-600">
                       {user?.email}
                     </p>
                   </div>

@@ -114,6 +114,9 @@ export default function MapView({ api }) {
   return (
     <div className="px-4 py-6">
       <div className="mx-auto flex max-w-5xl flex-col gap-6">
+        <div className="w-full">
+          <HazardLegend />
+        </div>
         <Card className="overflow-hidden">
           <div
             ref={mapRef}
@@ -183,9 +186,6 @@ export default function MapView({ api }) {
             </form>
           </CardContent>
         </Card>
-        <div className="w-full max-w-md">
-          <HazardLegend />
-        </div>
       </div>
     </div>
   );

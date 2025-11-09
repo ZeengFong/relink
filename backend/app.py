@@ -58,7 +58,7 @@ def create_app() -> Flask:
             resp.headers["Access-Control-Allow-Origin"] = origin
             resp.headers["Access-Control-Allow-Credentials"] = "true"
         resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-        resp.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+        resp.headers["Access-Control-Allow-Methods"] = "GET,POST,DELETE,OPTIONS"
         return resp
 
     @app.errorhandler(ValidationError)

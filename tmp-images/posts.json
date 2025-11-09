@@ -1,0 +1,19 @@
+[
+  {
+    "id": "p_b8652425",
+    "creator_id": "u_53999db5",
+    "title": "Img",
+    "description": "desc",
+    "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO2N3S0AAAAASUVORK5CYII=",
+    "capacity": 5,
+    "members": [
+      "u_53999db5"
+    ],
+    "chat_id": "c_d3130bcc",
+    "location": {
+      "lat": 0.0,
+      "lng": 0.0
+    },
+    "created_at": 1762694960
+  }
+]

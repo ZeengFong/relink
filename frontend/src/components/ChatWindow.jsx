@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import sendMsgIcon from '@/../icons/sendMsg.png';
 
 const socket = io('/chat', {
   autoConnect: false,
@@ -104,14 +104,21 @@ export default function ChatWindow({ chatId, api, user }) {
         )}
       </div>
       <div className="p-4 border-t">
-        <form onSubmit={sendMessage} className="flex gap-2">
+        <form onSubmit={sendMessage} className="grid grid-cols-[1fr,48px] items-center gap-2">
           <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Share an update"
             required
+            className="h-12 w-full"
           />
-          <Button type="submit">Send</Button>
+          <button
+            type="submit"
+            className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground transition hover:bg-primary/90"
+            aria-label="Send message"
+          >
+            <img src={sendMsgIcon} alt="" className="h-5 w-5" />
+          </button>
         </form>
       </div>
     </div>

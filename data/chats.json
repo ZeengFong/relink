@@ -4,8 +4,7 @@
     "post_id": "p_9a39dd76",
     "member_ids": [
       "u_97761587",
-      "u_ffd2adf8",
-      "u_c4e648b2"
+      "u_ffd2adf8"
     ],
     "messages": [
       {
@@ -19,36 +18,13 @@
         "user_id": "u_c4e648b2",
         "text": "Beef",
         "ts": 1762692809
-      }
-    ]
-  },
-  {
-    "id": "c_077d0e3a",
-    "post_id": "p_fd8f6c77",
-    "member_ids": [
-      "u_c4e648b2"
-    ],
-    "messages": [
-      {
-        "id": "m_ceadc275",
-        "user_id": "u_c4e648b2",
-        "text": "hi",
-        "ts": 1762687278
       },
       {
-        "id": "m_67ffb830",
+        "id": "m_c4c0b810",
         "user_id": "u_c4e648b2",
-        "text": "test",
-        "ts": 1762692793
+        "text": "dejhgedjhgedjhgdedhjekjdhed",
+        "ts": 1762697392
       }
     ]
-  },
-  {
-    "id": "c_cd65ea48",
-    "post_id": "p_b2c37d47",
-    "member_ids": [
-      "u_c4e648b2"
-    ],
-    "messages": []
   }
 ]
