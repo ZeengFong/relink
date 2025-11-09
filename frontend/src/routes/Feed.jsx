@@ -26,14 +26,14 @@ export default function Feed({ api, user }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col items-center gap-6 text-center">
+        <div className="space-y-3">
           <h1 className="text-3xl font-bold text-slate-900">Welcome back, {user.name}</h1>
-          <p className="text-sm text-slate-700">
+          <p className="max-w-2xl text-base text-slate-700">
             Browse nearby offers, open new ones, and stay ahead of hazards.
           </p>
         </div>
-        <div className="flex space-x-4">
+        <div className="flex flex-wrap justify-center gap-3">
           <Button asChild>
             <Link to="/posts/new">Create new offer</Link>
           </Button>

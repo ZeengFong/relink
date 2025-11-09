@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Dict, List
+import time
 
 from flask import Blueprint, jsonify, request
 
@@ -21,9 +22,24 @@ def _load() -> List[Dict]:
     return storage.read_json(HAZARDS_PATH)
 
 
+def prune_old_hazards(max_age_seconds: int = 172800) -> List[Dict]:
+    """Drop hazards older than ``max_age_seconds`` and persist the rest."""
+
+    def _prune(entries: List[Dict]) -> List[Dict]:
+        cutoff = time.time() - max_age_seconds
+        fresh = [entry for entry in entries if entry.get("created_at", 0) >= cutoff]
+        # only write if pruning occurred to avoid unnecessary disk churn
+        if len(fresh) != len(entries):
+            return fresh
+        return entries
+
+    return storage.update_json(HAZARDS_PATH, _prune)
+
+
 @bp.route("/hazards", methods=["GET"])
 def list_hazards():
-    return jsonify({"hazards": _load()})
+    fresh = prune_old_hazards()
+    return jsonify({"hazards": fresh})
 
 
 @bp.route("/hazards", methods=["POST"])

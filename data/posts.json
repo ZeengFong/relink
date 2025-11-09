@@ -7,7 +7,8 @@
     "image": null,
     "capacity": 30,
     "members": [
-      "u_97761587"
+      "u_97761587",
+      "u_1d944eec"
     ],
     "chat_id": "c_5972c379",
     "location": {
@@ -15,5 +16,40 @@
       "lng": -114.0708
     },
     "created_at": 1762677782
+  },
+  {
+    "id": "p_d20c4b35",
+    "creator_id": "u_34bd5d19",
+    "title": "Free food",
+    "description": "Serving 20 people",
+    "image": null,
+    "capacity": 20,
+    "members": [
+      "u_34bd5d19",
+      "u_0c132533"
+    ],
+    "chat_id": "c_0996b4ca",
+    "location": {
+      "lat": 51.05,
+      "lng": -114.07
+    },
+    "created_at": 1762700087
+  },
+  {
+    "id": "p_1903e0d1",
+    "creator_id": "u_ce1e1446",
+    "title": "Test",
+    "description": "desc",
+    "image": null,
+    "capacity": 5,
+    "members": [
+      "u_ce1e1446"
+    ],
+    "chat_id": "c_65aac41b",
+    "location": {
+      "lat": 0.0,
+      "lng": 0.0
+    },
+    "created_at": 1762700149
   }
 ]

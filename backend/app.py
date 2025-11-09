@@ -9,7 +9,7 @@ from typing import Deque, Dict
 from flask import Flask, jsonify, request
 from flask_socketio import SocketIO
 
-from . import auth, chat, hazards, news, posts
+from . import auth, chat, hazards, news, posts, disasters
 from .validators import ValidationError
 
 FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:5173")
@@ -54,10 +54,11 @@ def create_app() -> Flask:
     @app.after_request
     def _cors(resp):
         origin = request.headers.get("Origin")
-        if origin and (origin == FRONTEND_ORIGIN or origin.endswith("localhost:5173")):
+        if origin:
             resp.headers["Access-Control-Allow-Origin"] = origin
+            resp.headers["Vary"] = "Origin"
             resp.headers["Access-Control-Allow-Credentials"] = "true"
-        resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        resp.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
         resp.headers["Access-Control-Allow-Methods"] = "GET,POST,DELETE,OPTIONS"
         return resp
 
@@ -67,6 +68,7 @@ def create_app() -> Flask:
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(posts.bp)
+    app.register_blueprint(disasters.bp)
     app.register_blueprint(chat.bp)
     app.register_blueprint(hazards.bp)
     app.register_blueprint(news.bp)
@@ -79,7 +81,7 @@ def create_app() -> Flask:
 
 
 app = create_app()
-socketio = SocketIO(app, cors_allowed_origins=[FRONTEND_ORIGIN, "http://localhost:5173"], manage_session=True)
+socketio = SocketIO(app, cors_allowed_origins="*", manage_session=True)
 chat.register_socketio(socketio)
 
 

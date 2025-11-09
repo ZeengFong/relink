@@ -19,5 +19,40 @@
     "name": "Luca",
     "password_hash": "$2b$12$iIjo81kUTDNOBde28Eh6O.Q9xbAJibTuI6JbjR/RrZRNs.AUXAtC2",
     "created_at": 1762678576
+  },
+  {
+    "id": "u_0c132533",
+    "email": "plan.tings0s@icloud.com",
+    "name": "Test User",
+    "password_hash": "$2b$12$/As3FfT3P3ZuLIbKUCMqWOGNgeG5ly7z7wSIxMaHunsdSIQSfxW3C",
+    "created_at": 1762699705
+  },
+  {
+    "id": "u_34bd5d19",
+    "email": "gmail@gmail.com",
+    "name": "Test 2",
+    "password_hash": "$2b$12$SeDtpR8OagQYi9DflUh.2.LF14K3VdGK5YCEEW9/YRU1CQk5J92NC",
+    "created_at": 1762700015
+  },
+  {
+    "id": "u_ce1e1446",
+    "email": "owner@rel.ink",
+    "name": "Owner",
+    "password_hash": "$2b$12$QhADn7KJgnV1BXBD6p/Qz.ZGxddxNGlB/WbkkpnCRSS22jZDpd4ry",
+    "created_at": 1762700149
+  },
+  {
+    "id": "u_1d944eec",
+    "email": "guest@rel.ink",
+    "name": "Guest",
+    "password_hash": "$2b$12$yHbR0Ho/xSYpSzNZK.WDsO6DeHBnnfHqIpYfEwXTDQE9suqw1hiiO",
+    "created_at": 1762700150
+  },
+  {
+    "id": "u_80a90ad6",
+    "email": "asoufg82g8g2e9dg@g.com",
+    "name": "Name",
+    "password_hash": "$2b$12$d2/eJG2vxCDPh.RQJbmRHuRvy/TJFmu5sYux9C/XtL3dbL2/Y3u..",
+    "created_at": 1762701523
   }
 ]
