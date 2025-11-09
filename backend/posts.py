@@ -85,6 +85,15 @@ def create_post():
     return jsonify(new_post), 201
 
 
+@bp.route("/posts/<post_id>", methods=["GET"])
+def get_post(post_id: str):
+    posts = _load_posts()
+    post = next((p for p in posts if p["id"] == post_id), None)
+    if not post:
+        return jsonify({"error": "Post not found"}), 404
+    return jsonify(post)
+
+
 @bp.route("/posts/<post_id>/join", methods=["POST"])
 def join_post(post_id: str):
     user = require_auth()

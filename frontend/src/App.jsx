@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
-import Navbar from './components/Navbar.jsx';
+import Layout from './components/Layout.jsx';
 import Login from './routes/Login.jsx';
 import Register from './routes/Register.jsx';
 import Feed from './routes/Feed.jsx';
@@ -29,7 +29,6 @@ const api = async (path, options = {}) => {
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,40 +38,31 @@ export default function App() {
       .finally(() => setLoading(false));
   }, []);
 
-  const showToast = useCallback((message) => {
-    setToast(message);
-    setTimeout(() => setToast(''), 4000);
-  }, []);
-
   const handleLogout = () => {
     api('/auth/logout', { method: 'POST' })
       .then(() => {
         setUser(null);
         navigate('/login');
       })
-      .catch((err) => showToast(err.message));
+      .catch((err) => console.error(err));
   };
 
   if (loading) {
-    return <main aria-busy="true">Loading reLink…</main>;
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   return (
-    <>
-      <Navbar user={user} onLogout={handleLogout} />
-      <main>
-        {toast && <p role="alert" className="toast">{toast}</p>}
-        <Routes>
-          <Route path="/" element={user ? <Feed api={api} user={user} showToast={showToast} /> : <Navigate to="/login" />} />
-          <Route path="/login" element={<Login api={api} setUser={setUser} showToast={showToast} />} />
-          <Route path="/register" element={<Register api={api} setUser={setUser} showToast={showToast} />} />
-          <Route path="/posts/new" element={user ? <PostCreate api={api} showToast={showToast} /> : <Navigate to="/login" />} />
-          <Route path="/posts/:id" element={user ? <PostDetail api={api} user={user} showToast={showToast} /> : <Navigate to="/login" />} />
-          <Route path="/chats" element={user ? <Chats api={api} user={user} showToast={showToast} /> : <Navigate to="/login" />} />
-          <Route path="/map" element={user ? <MapView api={api} showToast={showToast} /> : <Navigate to="/login" />} />
-          <Route path="/profile" element={user ? <Profile user={user} api={api} /> : <Navigate to="/login" />} />
-        </Routes>
-      </main>
-    </>
+    <Routes>
+      <Route element={<Layout onLogout={handleLogout} user={user} />}>
+        <Route path="/" element={user ? <Feed api={api} user={user} /> : <Navigate to="/login" />} />
+        <Route path="/posts/new" element={user ? <PostCreate api={api} /> : <Navigate to="/login" />} />
+        <Route path="/posts/:id" element={user ? <PostDetail api={api} user={user} /> : <Navigate to="/login" />} />
+        <Route path="/chats" element={user ? <Chats api={api} user={user} /> : <Navigate to="/login" />} />
+        <Route path="/map" element={user ? <MapView api={api} /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={user ? <Profile user={user} api={api} /> : <Navigate to="/login" />} />
+      </Route>
+      <Route path="/login" element={<Login api={api} setUser={setUser} />} />
+      <Route path="/register" element={<Register api={api} setUser={setUser} />} />
+    </Routes>
   );
 }

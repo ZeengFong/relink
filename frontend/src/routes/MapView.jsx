@@ -1,41 +1,54 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import HazardLegend, { HAZARD_COLORS } from '../components/HazardLegend.jsx';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
-export default function MapView({ api, showToast }) {
+export default function MapView({ api }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const layerGroup = useRef(null);
   const [hazards, setHazards] = useState([]);
-  const [form, setForm] = useState({ type: 'fire', lat: 51.05, lng: -114.07, radius: 500, note: '', address: '' });
-  const [resolving, setResolving] = useState(false);
+  const [form, setForm] = useState({ type: 'fire', lat: 51.05, lng: -114.07, radius: 500, note: '' });
+  const [submitting, setSubmitting] = useState(false);
 
   const loadHazards = useCallback(() => {
     api('/hazards')
       .then(({ hazards: list }) => setHazards(list))
-      .catch((err) => showToast(err.message));
-  }, [api, showToast]);
+      .catch((err) => console.error(err));
+  }, [api]);
 
   useEffect(() => {
     loadHazards();
   }, [loadHazards]);
 
   useEffect(() => {
-    if (!mapRef.current) {
-      return;
-    }
+    if (!mapRef.current) return;
+
     mapInstance.current = L.map(mapRef.current).setView([form.lat, form.lng], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(mapInstance.current);
     layerGroup.current = L.layerGroup().addTo(mapInstance.current);
-    return () => mapInstance.current.remove();
+
+    const resizeObserver = new ResizeObserver(() => {
+      mapInstance.current?.invalidateSize();
+    });
+    resizeObserver.observe(mapRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+      mapInstance.current?.remove();
+    };
   }, []);
 
   useEffect(() => {
-    if (!layerGroup.current) {
-      return;
-    }
+    if (!layerGroup.current) return;
+
     layerGroup.current.clearLayers();
     hazards.forEach((hazard) => {
       const color = HAZARD_COLORS[hazard.type] || '#0f172a';
@@ -48,57 +61,20 @@ export default function MapView({ api, showToast }) {
         .bindPopup(`${hazard.type} — ${hazard.note || 'No note'}`)
         .addTo(layerGroup.current);
     });
+
     if (hazards.length && mapInstance.current) {
       const latest = hazards[hazards.length - 1];
       mapInstance.current.setView([latest.center.lat, latest.center.lng], 12);
     }
-    if (mapInstance.current) {
-      setTimeout(() => mapInstance.current?.invalidateSize(), 150);
-    }
   }, [hazards]);
 
-  const handleChange = (evt) => {
-    const { name, value } = evt.target;
-    const numericFields = new Set(['lat', 'lng', 'radius']);
-    setForm((prev) => ({ ...prev, [name]: numericFields.has(name) ? Number(value) : value }));
-  };
-
-  const lookupAddress = async (address) => {
-    const url = new URL('https://nominatim.openstreetmap.org/search');
-    url.searchParams.set('q', address);
-    url.searchParams.set('format', 'json');
-    url.searchParams.set('limit', '1');
-    const resp = await fetch(url, { headers: { Accept: 'application/json' } });
-    if (!resp.ok) {
-      throw new Error('Lookup failed');
-    }
-    const data = await resp.json();
-    if (!data.length) {
-      throw new Error('Address not found');
-    }
-    return { lat: Number(data[0].lat), lng: Number(data[0].lon) };
-  };
-
-  const geocodeAddress = async () => {
-    if (!form.address.trim()) {
-      showToast('Enter an address first');
-      return;
-    }
-    setResolving(true);
-    try {
-      const coords = await lookupAddress(form.address.trim());
-      setForm((prev) => ({ ...prev, lat: coords.lat, lng: coords.lng }));
-      showToast('Location updated from address');
-    } catch (err) {
-      showToast(err.message);
-    } finally {
-      setResolving(false);
-    }
+  const handleChange = (name, value) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const useMyLocation = () => {
     if (!navigator.geolocation) {
-      showToast('Location not supported');
+      console.error('Location not supported');
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -108,89 +84,93 @@ export default function MapView({ api, showToast }) {
           lat: Number(pos.coords.latitude.toFixed(5)),
           lng: Number(pos.coords.longitude.toFixed(5)),
         }));
-        showToast('Using your current coordinates');
       },
-      () => showToast('Failed to grab your position'),
+      () => console.error('Failed to grab your position'),
     );
   };
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
+    setSubmitting(true);
     try {
-      let lat = Number(form.lat);
-      let lng = Number(form.lng);
-      if (form.address.trim()) {
-        const coords = await lookupAddress(form.address.trim());
-        lat = coords.lat;
-        lng = coords.lng;
-        setForm((prev) => ({ ...prev, lat, lng }));
-      }
       await api('/hazards', {
         method: 'POST',
         body: JSON.stringify({
           type: form.type,
           radius_m: Number(form.radius),
-          center: { lat, lng },
+          center: { lat: Number(form.lat), lng: Number(form.lng) },
           note: form.note,
         }),
       });
-      showToast('Hazard submitted');
       setForm((prev) => ({ ...prev, note: '' }));
       loadHazards();
     } catch (err) {
-      showToast(err?.message || 'Unable to submit hazard');
+      console.error(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <section className="page-section" style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-      <div>
-        <div className="hero">
-          <strong>Report hazard</strong>
-          <h2>Keep neighbors out of danger</h2>
-          <p>Circles update instantly for everyone on reLink.</p>
-        </div>
-        <form onSubmit={handleSubmit} className="grid" style={{ gap: '0.75rem' }}>
-          <label htmlFor="type">Type</label>
-          <select id="type" name="type" value={form.type} onChange={handleChange}>
-            {Object.keys(HAZARD_COLORS).map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-          <label htmlFor="address">Address (optional)</label>
-          <input
-            id="address"
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-            placeholder="e.g. 425 6 Ave SE, Calgary"
-          />
-          <label htmlFor="lat">Latitude</label>
-          <input id="lat" name="lat" type="number" value={form.lat} onChange={handleChange} />
-          <label htmlFor="lng">Longitude</label>
-          <input id="lng" name="lng" type="number" value={form.lng} onChange={handleChange} />
-          <label htmlFor="radius">Radius (m)</label>
-          <input id="radius" name="radius" type="number" value={form.radius} onChange={handleChange} />
-          <label htmlFor="note">Note</label>
-          <textarea id="note" name="note" value={form.note} onChange={handleChange} placeholder="Smoke drifting over…" />
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <button type="button" className="secondary" onClick={useMyLocation}>
-              Use my location
-            </button>
-            <button type="button" className="secondary" onClick={geocodeAddress} disabled={resolving}>
-              {resolving ? 'Locating…' : 'Locate address'}
-            </button>
-          </div>
-          <button type="submit">Submit</button>
-        </form>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-120px)]">
+      <div className="md:col-span-2">
+        <Card className="h-full">
+          <div ref={mapRef} className="h-full w-full rounded-lg" role="img" aria-label="Map of user reported hazards"></div>
+        </Card>
+      </div>
+      <div className="md:col-span-1 flex flex-col gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Report Hazard</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="type">Type</Label>
+                <Select value={form.type} onValueChange={(value) => handleChange('type', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a hazard type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.keys(HAZARD_COLORS).map((type) => (
+                      <SelectItem key={type} value={type} className="capitalize">
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="lat">Latitude</Label>
+                  <Input id="lat" name="lat" type="number" value={form.lat} onChange={(e) => handleChange(e.target.name, e.target.value)} />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="lng">Longitude</Label>
+                  <Input id="lng" name="lng" type="number" value={form.lng} onChange={(e) => handleChange(e.target.name, e.target.value)} />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="radius">Radius (m)</Label>
+                <Input id="radius" name="radius" type="number" value={form.radius} onChange={(e) => handleChange(e.target.name, e.target.value)} />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="note">Note</Label>
+                <Textarea id="note" name="note" value={form.note} onChange={(e) => handleChange(e.target.name, e.target.value)} placeholder="Smoke drifting over…" />
+              </div>
+              <div className="flex justify-between">
+                <Button type="button" variant="outline" onClick={useMyLocation}>
+                  Use my location
+                </Button>
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? 'Submitting…' : 'Submit'}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
         <HazardLegend />
       </div>
-      <div>
-        <h3 style={{ marginTop: 0 }}>Live hazard map</h3>
-        <div ref={mapRef} className="map-container" role="img" aria-label="Map of user reported hazards"></div>
-      </div>
-    </section>
+    </div>
   );
 }

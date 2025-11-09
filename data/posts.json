@@ -7,7 +7,8 @@
     "image": null,
     "capacity": 30,
     "members": [
-      "u_97761587"
+      "u_97761587",
+      "u_c4e648b2"
     ],
     "chat_id": "c_5972c379",
     "location": {
@@ -15,5 +16,39 @@
       "lng": -114.0708
     },
     "created_at": 1762677782
+  },
+  {
+    "id": "p_fd8f6c77",
+    "creator_id": "u_c4e648b2",
+    "title": "Free shelter",
+    "description": "10 beds available",
+    "image": null,
+    "capacity": 10,
+    "members": [
+      "u_c4e648b2"
+    ],
+    "chat_id": "c_077d0e3a",
+    "location": {
+      "lat": 51.08019,
+      "lng": -114.13051
+    },
+    "created_at": 1762684536
+  },
+  {
+    "id": "p_b2c37d47",
+    "creator_id": "u_c4e648b2",
+    "title": "Beds available",
+    "description": "10 beds available for stay if you need",
+    "image": null,
+    "capacity": 10,
+    "members": [
+      "u_c4e648b2"
+    ],
+    "chat_id": "c_cd65ea48",
+    "location": {
+      "lat": 51.08022,
+      "lng": -114.13034
+    },
+    "created_at": 1762686229
   }
 ]

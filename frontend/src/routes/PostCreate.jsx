@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
-export default function PostCreate({ api, showToast }) {
+export default function PostCreate({ api }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     title: '',
@@ -9,7 +14,6 @@ export default function PostCreate({ api, showToast }) {
     capacity: 10,
     lat: 51.05,
     lng: -114.07,
-    address: '',
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -17,44 +21,9 @@ export default function PostCreate({ api, showToast }) {
     setForm((prev) => ({ ...prev, [evt.target.name]: evt.target.value }));
   };
 
-  const geocodeAddress = async (query) => {
-    const url = new URL('https://nominatim.openstreetmap.org/search');
-    url.searchParams.set('q', query);
-    url.searchParams.set('format', 'json');
-    url.searchParams.set('limit', '1');
-    const resp = await fetch(url.toString(), {
-      headers: { Accept: 'application/json' },
-    });
-    if (!resp.ok) {
-      throw new Error('Address lookup failed');
-    }
-    const results = await resp.json();
-    if (!results.length) {
-      throw new Error('No results for that address');
-    }
-    return { lat: Number(results[0].lat), lng: Number(results[0].lon) };
-  };
-
-  const locateFromAddress = async () => {
-    if (!form.address.trim()) {
-      showToast('Enter an address first');
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const coords = await geocodeAddress(form.address.trim());
-      setForm((prev) => ({ ...prev, lat: coords.lat, lng: coords.lng }));
-      showToast('Coordinates filled from address');
-    } catch (err) {
-      showToast(err?.message || 'Unable to create offer');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   const useMyLocation = () => {
     if (!navigator.geolocation) {
-      showToast('Location not supported in this browser');
+      console.error('Location not supported in this browser');
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -64,9 +33,8 @@ export default function PostCreate({ api, showToast }) {
           lat: Number(pos.coords.latitude.toFixed(5)),
           lng: Number(pos.coords.longitude.toFixed(5)),
         }));
-        showToast('Coordinates updated from your location');
       },
-      () => showToast('Unable to get location permission'),
+      () => console.error('Unable to get location permission'),
     );
   };
 
@@ -74,89 +42,106 @@ export default function PostCreate({ api, showToast }) {
     evt.preventDefault();
     setSubmitting(true);
     try {
-      let lat = Number(form.lat);
-      let lng = Number(form.lng);
-      if (form.address.trim()) {
-        const coords = await geocodeAddress(form.address.trim());
-        lat = coords.lat;
-        lng = coords.lng;
-      }
       const payload = {
         title: form.title,
         description: form.description,
         capacity: Number(form.capacity),
-        location: { lat, lng },
+        location: { lat: Number(form.lat), lng: Number(form.lng) },
       };
       const { id } = await api('/posts', {
         method: 'POST',
         body: JSON.stringify(payload),
       });
-      showToast('Offer published');
       navigate(`/posts/${id}`);
     } catch (err) {
-      showToast(err.message);
+      console.error(err);
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <section className="page-section" style={{ maxWidth: '720px', margin: '0 auto' }}>
-      <div className="hero">
-        <strong>New offer</strong>
-        <h2>Describe how you can help</h2>
-        <p>Share clear details so neighbors understand availability.</p>
-      </div>
-      <form onSubmit={handleSubmit} className="grid" style={{ gap: '1rem' }}>
-        <label htmlFor="title">Title</label>
-        <input id="title" name="title" required value={form.title} onChange={handleChange} placeholder="Hot meals tonight" />
-
-        <label htmlFor="description">Description</label>
-        <textarea
-          id="description"
-          name="description"
-          rows="4"
-          required
-          value={form.description}
-          onChange={handleChange}
-          placeholder="Serving 30 plates with vegan options..."
-        />
-
-        <label htmlFor="address">Address (auto geocode)</label>
-        <input
-          id="address"
-          name="address"
-          value={form.address}
-          onChange={handleChange}
-          placeholder="e.g. 373 Memorial Dr NW, Calgary"
-        />
-
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <div style={{ flex: 1, minWidth: '160px' }}>
-            <label htmlFor="capacity">Capacity</label>
-            <input id="capacity" name="capacity" type="number" min="1" value={form.capacity} onChange={handleChange} />
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle>Create a new offer</CardTitle>
+        <CardDescription>
+          Share clear details so neighbors understand availability.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              name="title"
+              required
+              value={form.title}
+              onChange={handleChange}
+              placeholder="Hot meals tonight"
+            />
           </div>
-          <div style={{ flex: 1, minWidth: '160px' }}>
-            <label htmlFor="lat">Latitude</label>
-            <input id="lat" name="lat" type="number" step="0.0001" value={form.lat} onChange={handleChange} />
+          <div className="grid gap-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              rows="4"
+              required
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Serving 30 plates with vegan options..."
+            />
           </div>
-          <div style={{ flex: 1, minWidth: '160px' }}>
-            <label htmlFor="lng">Longitude</label>
-            <input id="lng" name="lng" type="number" step="0.0001" value={form.lng} onChange={handleChange} />
+          <div className="grid grid-cols-3 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="capacity">Capacity</Label>
+              <Input
+                id="capacity"
+                name="capacity"
+                type="number"
+                min="1"
+                value={form.capacity}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lat">Latitude</Label>
+              <Input
+                id="lat"
+                name="lat"
+                type="number"
+                step="0.0001"
+                value={form.lat}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lng">Longitude</Label>
+              <Input
+                id="lng"
+                name="lng"
+                type="number"
+                step="0.0001"
+                value={form.lng}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-        </div>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <button type="button" className="secondary" onClick={useMyLocation}>
-            Use my location
-          </button>
-          <button type="button" className="secondary" onClick={locateFromAddress} disabled={submitting}>
-            {submitting ? 'Resolving…' : 'Locate address'}
-          </button>
-        </div>
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Saving…' : 'Create offer'}
-        </button>
-      </form>
-    </section>
+          <div className="flex justify-end space-x-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={useMyLocation}
+            >
+              Use my location
+            </Button>
+            <Button type="submit" disabled={submitting}>
+              {submitting ? 'Saving…' : 'Create offer'}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

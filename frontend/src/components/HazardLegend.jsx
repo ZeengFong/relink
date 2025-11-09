@@ -1,3 +1,5 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 export const HAZARD_COLORS = {
   fire: '#dc2626',
   flood: '#2563eb',
@@ -8,25 +10,24 @@ export const HAZARD_COLORS = {
 
 export default function HazardLegend() {
   return (
-    <div className="card" style={{ marginTop: '1.5rem' }}>
-      <strong>Hazard legend</strong>
-      <ul style={{ listStyle: 'none', padding: 0, marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-        {Object.entries(HAZARD_COLORS).map(([type, color]) => (
-          <li key={type} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'capitalize' }}>
-            <span
-              style={{
-                width: '1.1rem',
-                height: '1.1rem',
-                background: color,
-                display: 'inline-block',
-                borderRadius: '999px',
-              }}
-              aria-hidden="true"
-            ></span>
-            {type}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Hazard Legend</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-2">
+          {Object.entries(HAZARD_COLORS).map(([type, color]) => (
+            <li key={type} className="flex items-center gap-2 capitalize">
+              <span
+                style={{ backgroundColor: color }}
+                className="w-4 h-4 rounded-full inline-block"
+                aria-hidden="true"
+              ></span>
+              {type}
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-export default function PostDetail({ api, user, showToast }) {
+export default function PostDetail({ api, user }) {
   const { id } = useParams();
   const [post, setPost] = useState(null);
 
   useEffect(() => {
-    api('/posts')
-      .then(({ posts }) => posts.find((p) => p.id === id))
-      .then((match) => setPost(match || null));
+    api(`/posts/${id}`)
+      .then((post) => setPost(post))
+      .catch((err) => console.error(err));
   }, [api, id]);
 
   if (!post) {
-    return <p className="page-section">Loading post…</p>;
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   const isMember = post.members.includes(user.id);
@@ -21,45 +24,44 @@ export default function PostDetail({ api, user, showToast }) {
     api(`/posts/${post.id}/join`, { method: 'POST' })
       .then((updated) => {
         setPost(updated);
-        showToast('Joined offer');
       })
-      .catch((err) => showToast(err.message));
+      .catch((err) => console.error(err));
   };
 
   return (
-    <article className="page-section" style={{ maxWidth: '760px', margin: '0 auto' }}>
-      <header className="hero">
-        <strong>Offer detail</strong>
-        <h2>{post.title}</h2>
-        <p>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle>{post.title}</CardTitle>
+        <CardDescription>
           {post.members.length}/{post.capacity} attending · Lat {post.location.lat}, Lng {post.location.lng}
-        </p>
-      </header>
-      <p>{post.description}</p>
-      <section style={{ margin: '1.5rem 0' }}>
-        <h4>Members</h4>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-          {post.members.map((member) => (
-            <span key={member} className="capacity-pill">
-              {member}
-            </span>
-          ))}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">{post.description}</p>
+        <div className="mt-6">
+          <h3 className="text-lg font-medium">Members</h3>
+          <div className="flex flex-wrap gap-4 mt-4">
+            {post.members.map((member) => (
+              <Avatar key={member}>
+                <AvatarImage src={`https://avatar.vercel.sh/${member}.png`} />
+                <AvatarFallback>{member.charAt(0)}</AvatarFallback>
+              </Avatar>
+            ))}
+          </div>
         </div>
-      </section>
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <Button asChild variant="secondary">
+          <Link to="/">Back to feed</Link>
+        </Button>
         {isMember ? (
-          <Link to="/chats" className="secondary" style={{ textDecoration: 'none' }}>
-            Open chat
-          </Link>
+          <Button asChild>
+            <Link to="/chats">Open chat</Link>
+          </Button>
         ) : (
-          <button type="button" onClick={join}>
-            Join offer
-          </button>
+          <Button onClick={join}>Join offer</Button>
         )}
-        <Link to="/" className="secondary" style={{ textDecoration: 'none' }}>
-          Back to feed
-        </Link>
-      </div>
-    </article>
+      </CardFooter>
+    </Card>
   );
 }
