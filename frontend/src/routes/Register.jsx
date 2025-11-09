@@ -23,9 +23,13 @@ export default function Register({ api, setUser, showToast }) {
   };
 
   return (
-    <section>
-      <h2>Create account</h2>
-      <form onSubmit={handleSubmit} aria-label="Registration form">
+    <section className="page-section" style={{ maxWidth: '520px', margin: '2rem auto' }}>
+      <div className="hero">
+        <strong>Join reLink</strong>
+        <h2>Create a helper profile</h2>
+        <p>Passwords stay hashed with bcrypt. Takes 30 seconds.</p>
+      </div>
+      <form onSubmit={handleSubmit} aria-label="Registration form" className="grid" style={{ gap: '0.9rem' }}>
         <label htmlFor="reg-email">Email</label>
         <input id="reg-email" name="email" type="email" required value={form.email} onChange={handleChange} />
 
@@ -37,7 +41,7 @@ export default function Register({ api, setUser, showToast }) {
 
         <button type="submit">Join reLink</button>
       </form>
-      <p>
+      <p style={{ marginTop: '1rem' }}>
         Already registered? <Link to="/login">Log in</Link>
       </p>
     </section>

@@ -1,8 +1,17 @@
 import { Link, NavLink } from 'react-router-dom';
 
+const navLinks = [
+  { to: '/', label: 'Feed' },
+  { to: '/map', label: 'Map' },
+  { to: '/chats', label: 'Chats' },
+  { to: '/profile', label: 'Profile' },
+];
+
 export default function Navbar({ user, onLogout }) {
+  const linkClass = ({ isActive }) => (isActive ? '' : 'secondary');
+
   return (
-    <nav role="navigation" aria-label="Main">
+    <nav role="navigation" aria-label="Primary">
       <ul>
         <li>
           <Link className="nav-brand" to="/">
@@ -13,31 +22,30 @@ export default function Navbar({ user, onLogout }) {
       <ul>
         {user ? (
           <>
-            <li>
-              <NavLink to="/">Feed</NavLink>
-            </li>
-            <li>
-              <NavLink to="/map">Map</NavLink>
-            </li>
-            <li>
-              <NavLink to="/chats">Chats</NavLink>
-            </li>
-            <li>
-              <NavLink to="/profile">Profile</NavLink>
-            </li>
+            {navLinks.map((link) => (
+              <li key={link.to}>
+                <NavLink to={link.to} className={linkClass}>
+                  {link.label}
+                </NavLink>
+              </li>
+            ))}
             <li>
               <button type="button" onClick={onLogout} aria-label="Sign out">
-                Sign out
+                Logout
               </button>
             </li>
           </>
         ) : (
           <>
             <li>
-              <NavLink to="/login">Login</NavLink>
+              <NavLink to="/login" className={linkClass}>
+                Login
+              </NavLink>
             </li>
             <li>
-              <NavLink to="/register">Create account</NavLink>
+              <NavLink to="/register" className={linkClass}>
+                Create account
+              </NavLink>
             </li>
           </>
         )}

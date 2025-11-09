@@ -6,7 +6,7 @@ const socket = io('/chat', {
   withCredentials: true,
 });
 
-export default function ChatWindow({ chatId, api }) {
+export default function ChatWindow({ chatId, api, user }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
   const listRef = useRef(null);
@@ -47,10 +47,14 @@ export default function ChatWindow({ chatId, api }) {
 
   const sendMessage = (evt) => {
     evt.preventDefault();
-    if (!text.trim()) {
+    const trimmed = text.trim();
+    if (!trimmed) {
       return;
     }
-    socket.emit('message', { chat_id: chatId, text });
+    if (!socket.connected) {
+      socket.connect();
+    }
+    socket.emit('message', { chat_id: chatId, text: trimmed });
     setText('');
   };
 
@@ -58,14 +62,15 @@ export default function ChatWindow({ chatId, api }) {
     <section className="chat-window" aria-live="polite">
       <div ref={listRef} className="chat-messages">
         {messages.map((msg) => (
-          <div key={msg.id} className="chat-message">
-            <strong>{msg.user_id}</strong>
-            <p>{msg.text}</p>
+          <div key={msg.id} className={`bubble ${msg.user_id === user.id ? 'self' : 'other'}`}>
+            <small style={{ display: 'block', opacity: 0.7, marginBottom: '0.25rem' }}>{msg.user_id}</small>
+            <p style={{ margin: 0 }}>{msg.text}</p>
             <small>{new Date(msg.ts * 1000).toLocaleTimeString()}</small>
           </div>
         ))}
+        {!messages.length && <p className="empty-state">No messages yet. Be the first to wave 👋</p>}
       </div>
-      <form className="chat-input" onSubmit={sendMessage}>
+      <form className="chat-input" onSubmit={sendMessage} aria-label="Send message">
         <label htmlFor="chat-text" className="visually-hidden">
           Message text
         </label>

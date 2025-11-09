@@ -19,7 +19,7 @@ Two terminals or `make dev` (runs backend + Vite dev server):
 ```bash
 make dev
 ```
-Backend: http://localhost:5000, Frontend: http://localhost:5173 (proxy forwards `/api` + `/socket.io`).
+Backend: http://localhost:5050, Frontend: http://localhost:5173 (proxy forwards `/api` + `/socket.io`).
 
 ### Seed / Reset data
 Resets `./data/*.json` with demo users, posts, chats, and hazards:

@@ -23,9 +23,13 @@ export default function Login({ api, setUser, showToast }) {
   };
 
   return (
-    <section>
-      <h2>Welcome back</h2>
-      <form onSubmit={handleSubmit} aria-label="Login form">
+    <section className="page-section" style={{ maxWidth: '480px', margin: '2rem auto' }}>
+      <div className="hero">
+        <strong>Log in</strong>
+        <h2>Quick access to reLink</h2>
+        <p>Your session stays in a secure cookie.</p>
+      </div>
+      <form onSubmit={handleSubmit} aria-label="Login form" className="grid" style={{ gap: '0.9rem' }}>
         <label htmlFor="email">Email</label>
         <input id="email" name="email" type="email" required value={form.email} onChange={handleChange} autoComplete="email" />
 
@@ -34,7 +38,7 @@ export default function Login({ api, setUser, showToast }) {
 
         <button type="submit">Log in</button>
       </form>
-      <p>
+      <p style={{ marginTop: '1rem' }}>
         No account yet? <Link to="/register">Create one</Link>
       </p>
     </section>

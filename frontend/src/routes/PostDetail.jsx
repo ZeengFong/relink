@@ -12,7 +12,7 @@ export default function PostDetail({ api, user, showToast }) {
   }, [api, id]);
 
   if (!post) {
-    return <p>Loading post…</p>;
+    return <p className="page-section">Loading post…</p>;
   }
 
   const isMember = post.members.includes(user.id);
@@ -27,26 +27,38 @@ export default function PostDetail({ api, user, showToast }) {
   };
 
   return (
-    <article>
-      <header>
+    <article className="page-section" style={{ maxWidth: '760px', margin: '0 auto' }}>
+      <header className="hero">
+        <strong>Offer detail</strong>
         <h2>{post.title}</h2>
         <p>
-          {post.members.length}/{post.capacity} attending
+          {post.members.length}/{post.capacity} attending · Lat {post.location.lat}, Lng {post.location.lng}
         </p>
       </header>
       <p>{post.description}</p>
-      <p>
-        Location: {post.location.lat}, {post.location.lng}
-      </p>
-      <p>Members: {post.members.join(', ')}</p>
-      <div>
+      <section style={{ margin: '1.5rem 0' }}>
+        <h4>Members</h4>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+          {post.members.map((member) => (
+            <span key={member} className="capacity-pill">
+              {member}
+            </span>
+          ))}
+        </div>
+      </section>
+      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
         {isMember ? (
-          <Link to="/chats">Open chat</Link>
+          <Link to="/chats" className="secondary" style={{ textDecoration: 'none' }}>
+            Open chat
+          </Link>
         ) : (
           <button type="button" onClick={join}>
             Join offer
           </button>
         )}
+        <Link to="/" className="secondary" style={{ textDecoration: 'none' }}>
+          Back to feed
+        </Link>
       </div>
     </article>
   );
