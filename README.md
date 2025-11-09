@@ -1,6 +1,3 @@
-# reLink
-
-Crowd-sourced disaster relief hub built for hackathons: neighbors can post offers, mark hazards on a live map, follow weather headlines, and coordinate through realtime group chats backed by Flask-SocketIO.
 
 # How to use it?
 1. Install python requirements with pip install -r requirements.txt (cd into backend first)
