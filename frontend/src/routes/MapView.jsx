@@ -112,23 +112,29 @@ export default function MapView({ api }) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-120px)]">
-      <div className="md:col-span-2">
-        <Card className="h-full">
-          <div ref={mapRef} className="h-full w-full rounded-lg" role="img" aria-label="Map of user reported hazards"></div>
+    <div className="px-4 py-6">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6">
+        <Card className="overflow-hidden">
+          <div
+            ref={mapRef}
+            className="w-full rounded-lg"
+            style={{ aspectRatio: '16 / 10', minHeight: '360px' }}
+            role="img"
+            aria-label="Map of user reported hazards"
+          ></div>
         </Card>
-      </div>
-      <div className="md:col-span-1 flex flex-col gap-4">
         <Card>
           <CardHeader>
             <CardTitle>Report Hazard</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="type">Type</Label>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="type" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Type
+                </Label>
                 <Select value={form.type} onValueChange={(value) => handleChange('type', value)}>
-                  <SelectTrigger>
+                  <SelectTrigger id="type">
                     <SelectValue placeholder="Select a hazard type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -140,26 +146,34 @@ export default function MapView({ api }) {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="lat">Latitude</Label>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="lat" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Latitude
+                  </Label>
                   <Input id="lat" name="lat" type="number" value={form.lat} onChange={(e) => handleChange(e.target.name, e.target.value)} />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="lng">Longitude</Label>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="lng" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Longitude
+                  </Label>
                   <Input id="lng" name="lng" type="number" value={form.lng} onChange={(e) => handleChange(e.target.name, e.target.value)} />
                 </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="radius" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Radius (m)
+                  </Label>
+                  <Input id="radius" name="radius" type="number" value={form.radius} onChange={(e) => handleChange(e.target.name, e.target.value)} />
+                </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="radius">Radius (m)</Label>
-                <Input id="radius" name="radius" type="number" value={form.radius} onChange={(e) => handleChange(e.target.name, e.target.value)} />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="note">Note</Label>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="note" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Note
+                </Label>
                 <Textarea id="note" name="note" value={form.note} onChange={(e) => handleChange(e.target.name, e.target.value)} placeholder="Smoke drifting over…" />
               </div>
-              <div className="flex justify-between">
-                <Button type="button" variant="outline" onClick={useMyLocation}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <Button type="button" className="bg-blue-600 text-white hover:bg-blue-500" onClick={useMyLocation}>
                   Use my location
                 </Button>
                 <Button type="submit" disabled={submitting}>
@@ -169,7 +183,9 @@ export default function MapView({ api }) {
             </form>
           </CardContent>
         </Card>
-        <HazardLegend />
+        <div className="w-full max-w-md">
+          <HazardLegend />
+        </div>
       </div>
     </div>
   );
