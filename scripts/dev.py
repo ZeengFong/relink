@@ -29,7 +29,7 @@ def _warn_busy_ports(ports: Iterable[int]) -> None:
         joined = ", ".join(busy)
         print(
             f"Warning: port(s) {joined} already in use. Existing processes won't be terminated automatically;\n"
-            "press Ctrl+C and stop them manually or re-run with --no-backend/--no-frontend."
+            "Press Ctrl+C and stop them manually or re-run with --no-backend/--no-frontend."
         )
 
 
@@ -51,7 +51,14 @@ def _start_process(
     cmd: Sequence[str], label: str, *, env: Optional[Dict[str, str]] = None
 ) -> subprocess.Popen[str]:
     print(f"Starting {label}: {' '.join(cmd)}")
-    return subprocess.Popen(cmd, cwd=ROOT, env=env)
+
+    # --- Windows fix: resolve full path to executable and use shell ---
+    exe = shutil.which(cmd[0])
+    if exe:
+        cmd[0] = exe
+
+    # On Windows, use shell=True so that PATH resolution works even with cwd changed
+    return subprocess.Popen(cmd, cwd=str(ROOT), env=env, shell=os.name == "nt")
 
 
 def main() -> None:
@@ -61,6 +68,7 @@ def main() -> None:
         print("Nothing to run (both backend and frontend disabled).")
         return
 
+    # Check for required commands
     if not args.no_frontend:
         _ensure_command("npm")
         print(
@@ -68,36 +76,36 @@ def main() -> None:
             "once Vite finishes compiling."
         )
 
+    # Auto-detect Python command
+    python_cmd = shutil.which("py") or shutil.which("python") or shutil.which("python3")
+    if not python_cmd:
+        raise SystemExit("Error: No Python interpreter found. Please install Python and add it to PATH.")
+
+    # Build runner list
     runners: List[Tuple[str, List[str]]] = []
     if not args.no_backend:
-        runners.append((
-            "backend",
-            [sys.executable, "-m", "backend.app"],
-        ))
+        runners.append(("backend", [python_cmd, "-m", "backend.app"]))
     if not args.no_frontend:
-        runners.append(
-            (
+        runners.append((
+            "frontend",
+            [
+                "npm",
+                "--prefix",
                 "frontend",
-                [
-                    "npm",
-                    "--prefix",
-                    "frontend",
-                    "run",
-                    "dev",
-                    "--",
-                    "--host",
-                    "--port",
-                    str(args.frontend_port),
-                ],
-            )
-        )
+                "run",
+                "dev",
+                "--",
+                "--host",
+                "--port",
+                str(args.frontend_port),
+            ],
+        ))
 
     _warn_busy_ports(
         port for port, should_check in (
             (args.backend_port, not args.no_backend),
             (args.frontend_port, not args.no_frontend),
-        )
-        if should_check
+        ) if should_check
     )
 
     procs: List[Tuple[str, subprocess.Popen[str]]] = []
@@ -119,6 +127,7 @@ def main() -> None:
             except subprocess.TimeoutExpired:
                 proc.kill()
 
+    # Ensure Ctrl+C and task kill signals stop everything cleanly
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, _shutdown)
     if hasattr(signal, "SIGBREAK"):
