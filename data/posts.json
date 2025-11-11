@@ -8,7 +8,8 @@
     "capacity": 50,
     "members": [
       "u_c4e648b2",
-      "u_5404e7f6"
+      "u_5404e7f6",
+      "u_c465c0d2"
     ],
     "chat_id": "c_b872a3bd",
     "location": {
@@ -50,5 +51,23 @@
       "lng": -114.07
     },
     "created_at": 1762710676
+  },
+  {
+    "id": "p_91c769a2",
+    "creator_id": "u_c465c0d2",
+    "title": "test",
+    "description": "test",
+    "image": null,
+    "capacity": 20,
+    "members": [
+      "u_c465c0d2",
+      "u_7127b566"
+    ],
+    "chat_id": "c_c963d340",
+    "location": {
+      "lat": 51.05,
+      "lng": -114.07
+    },
+    "created_at": 1762835131
   }
 ]

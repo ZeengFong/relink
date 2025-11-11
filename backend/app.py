@@ -9,7 +9,7 @@ from typing import Deque, Dict
 from flask import Flask, jsonify, request
 from flask_socketio import SocketIO
 
-from . import auth, chat, hazards, news, posts, disasters
+from . import auth, chat, hazards, posts, disasters
 from .validators import ValidationError
 
 FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:5173")
@@ -71,7 +71,6 @@ def create_app() -> Flask:
     app.register_blueprint(disasters.bp)
     app.register_blueprint(chat.bp)
     app.register_blueprint(hazards.bp)
-    app.register_blueprint(news.bp)
 
     @app.route("/health")
     def health():

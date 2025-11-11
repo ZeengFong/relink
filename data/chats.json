@@ -70,7 +70,8 @@
     "post_id": "p_c8293a67",
     "member_ids": [
       "u_c4e648b2",
-      "u_5404e7f6"
+      "u_5404e7f6",
+      "u_c465c0d2"
     ],
     "messages": [
       {
@@ -90,6 +91,18 @@
         "user_id": "u_5404e7f6",
         "text": "Great!",
         "ts": 1762711124
+      },
+      {
+        "id": "m_2deeab43",
+        "user_id": "u_c465c0d2",
+        "text": "hello",
+        "ts": 1762834707
+      },
+      {
+        "id": "m_9ed9d24d",
+        "user_id": "u_7127b566",
+        "text": "hi",
+        "ts": 1762834941
       }
     ]
   },
@@ -108,5 +121,21 @@
       "u_c4e648b2"
     ],
     "messages": []
+  },
+  {
+    "id": "c_c963d340",
+    "post_id": "p_91c769a2",
+    "member_ids": [
+      "u_c465c0d2",
+      "u_7127b566"
+    ],
+    "messages": [
+      {
+        "id": "m_6ea67602",
+        "user_id": "u_c465c0d2",
+        "text": "hi",
+        "ts": 1762835177
+      }
+    ]
   }
 ]

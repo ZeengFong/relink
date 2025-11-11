@@ -1,4 +1,5 @@
-PYTHON := python3
+PYTHON := $(shell py --version >/dev/null 2>&1 && echo py || (python -V >/dev/null 2>&1 && echo python || echo python3))
+DEV_ARGS ?=
 
 .PHONY: dev seed build backend frontend install
 
@@ -9,12 +10,7 @@ frontend:
 	npm --prefix frontend run dev -- --host
 
 dev:
-	@echo "Killing any processes on ports 5050 and 5173..."
-	@lsof -ti :5050 | xargs -r kill -9 2>/dev/null || true
-	@lsof -ti :5173 | xargs -r kill -9 2>/dev/null || true
-	@echo "Launching backend + frontend..."
-	@python3 -m backend.app & \
-	npm --prefix frontend run dev -- --host
+	$(PYTHON) scripts/dev.py $(DEV_ARGS)
 
 seed:
 	$(PYTHON) -m backend.seed

@@ -61,5 +61,19 @@
     "name": "Bob",
     "password_hash": "$2b$12$Cp81803sutja0fd8Ef.eN.LOq.yCj/jrPKOFho5rf9gxPxKaSIcqO",
     "created_at": 1762711046
+  },
+  {
+    "id": "u_c465c0d2",
+    "email": "ayushsreejith30@gmail.com",
+    "name": "ayush",
+    "password_hash": "$2b$12$bFGh9giikf47GCipOjFrdeKDKaYwEYFAszE7vvgr/GOHVkacPerNy",
+    "created_at": 1762834572
+  },
+  {
+    "id": "u_7127b566",
+    "email": "sam@gmail.com",
+    "name": "Sam",
+    "password_hash": "$2b$12$BDpQT/UH8FfQK9OM5UIZ3uzjA4oSGQD.D9fMioCsdQILUkOPpmxGu",
+    "created_at": 1762834672
   }
 ]

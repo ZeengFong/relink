@@ -1,4 +1,4 @@
-"""Storage helpers for JSON files with simple POSIX file locking.
+"""Storage helpers for JSON files with portable file locking.
 
 This module centralizes all disk interactions so the rest of the app can
 trust atomic, serialized access to the JSON blobs we use as a local data store.
@@ -12,7 +12,12 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Any, Iterable
 
-import fcntl
+IS_WINDOWS = os.name == "nt"
+
+if IS_WINDOWS:  # pragma: no cover - exercised in Windows environments
+    import msvcrt
+else:  # pragma: no cover - skipped on Windows
+    import fcntl
 
 DEFAULT_DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
@@ -38,12 +43,27 @@ def with_lock(path: Path):
     """Acquire an exclusive lock on ``path`` via a sibling ``.lock`` file."""
     lock_file = Path(f"{path}.lock")
     lock_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(lock_file, "w", encoding="utf-8") as handle:
-        fcntl.flock(handle, fcntl.LOCK_EX)
-        try:
-            yield
-        finally:
-            fcntl.flock(handle, fcntl.LOCK_UN)
+
+    if IS_WINDOWS:
+        lock_file.touch(exist_ok=True)
+        with open(lock_file, "r+", encoding="utf-8") as handle:
+            handle.seek(0)
+            handle.write("0")
+            handle.flush()
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+            try:
+                yield
+            finally:
+                handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+    else:
+        with open(lock_file, "w", encoding="utf-8") as handle:
+            fcntl.flock(handle, fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(handle, fcntl.LOCK_UN)
 
 
 def read_json(path: Path) -> Any:
